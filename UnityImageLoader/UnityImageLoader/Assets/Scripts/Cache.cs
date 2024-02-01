@@ -14,14 +14,24 @@ public class Cache : MonoBehaviour
         _settings = FindObjectOfType<Settings>();
     }
 
-    public bool CheckCathe(string url)
+    public bool CheckCathe(string url, int count)
     {
         foreach (var keyUrl in CacheOfImages.Keys)
         {
             if (url == keyUrl)
             {
-                DisplayTheImages(url);
-                return false;
+                _cacheOfImages.TryGetValue(url, out List<ImageController> values);
+                if (count == values.Count)
+                {
+                    DisplayTheImages(url);
+                    return false;
+                }
+                else
+                {
+                    HideTheImages();
+                    RemoveCathe(url);
+                    return true;
+                }
             }
         }
 

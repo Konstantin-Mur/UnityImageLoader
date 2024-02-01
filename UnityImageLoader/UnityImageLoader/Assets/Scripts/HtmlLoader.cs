@@ -14,6 +14,8 @@ public class HtmlLoader : MonoBehaviour
     private IEnumerable<IAttr> _urlOfImages;
     public IEnumerable<IAttr> UrlOfImages => _urlOfImages;
 
+    public int UrlsCount => _urlOfImages.Count<IAttr>();
+
     private void Awake()
     {
         EventAgregator.getAllLinksOfPictures.AddListener(GetAllUrlOfPictures);
@@ -40,14 +42,14 @@ public class HtmlLoader : MonoBehaviour
         }
         else
         {
-            var fileExtensions = new string[] { ".jpg", ".png" };
+            var fileExtensions = new string[] { ".jpg", ".png", ".GIF", ".JPEG", ".PDF", ".BMP", };
 
             _urlOfImages = from element in document.All
                            from attribute in element.Attributes
                            where fileExtensions.Any(e => attribute.Value.EndsWith(e))
                            select attribute;
 
-            if (_urlOfImages.Count<IAttr>() > 0)
+            if (UrlsCount > 0)
             {
                 EventAgregator.LoadAllPickures.Invoke();
             }

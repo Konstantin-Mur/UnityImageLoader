@@ -24,8 +24,7 @@ public class ImageLoader : MonoBehaviour
 
     private IEnumerator GetImagesCoroutine()
     {
-        _cache.CheckCathe(_htmlLoader.Url);
-        if (_cache.CheckCathe(_htmlLoader.Url))
+        if (_cache.CheckCathe(_htmlLoader.Url, _htmlLoader.UrlsCount))
         {
             CreateDefaultEmpty();
 
