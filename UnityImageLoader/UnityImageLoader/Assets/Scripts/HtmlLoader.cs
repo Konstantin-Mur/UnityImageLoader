@@ -47,7 +47,14 @@ public class HtmlLoader : MonoBehaviour
                            where fileExtensions.Any(e => attribute.Value.EndsWith(e))
                            select attribute;
 
-            EventAgregator.LoadAllPickures.Invoke();
+            if (_urlOfImages.Count<IAttr>() > 0)
+            {
+                EventAgregator.LoadAllPickures.Invoke();
+            }
+            else
+            {
+                EventAgregator.NotContent.Invoke();
+            }
         }
     }
 }

@@ -31,30 +31,44 @@ public class ImageLoader : MonoBehaviour
 
             foreach (var url in _htmlLoader.UrlOfImages)
             {
-                var request = UnityWebRequestTexture.GetTexture(url.Value);
 
-                yield return request.SendWebRequest();
-
-                if (request.isNetworkError || request.isHttpError)
-                {
-                    yield return null;
-                }
-
-                var texture = DownloadHandlerTexture.GetContent(request);
-
-                foreach (var controller in _imageControllers)
-                {
-                    if (controller.ImageModel.Url == url.Value)
-                    {
-                        Sprite image = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-
-                        controller.ImageModel.SetImage(image);
-                        controller.onUpdateUI.Invoke();
-                    }
-                }
-
-                _cache.UpdateCathe(_htmlLoader.Url, _imageControllers);
+                StartCoroutine(DownloadTexture(url.Value));
+                yield return null;
             }
+        }
+    }
+
+    private IEnumerator DownloadTexture(string url)
+    {
+        var request = UnityWebRequestTexture.GetTexture(url);
+
+        yield return request.SendWebRequest();
+
+        while (!request.isDone)
+        {
+            yield return null;
+        }
+
+        if (request.isNetworkError)
+        {
+            Debug.Log("Error in web service::" + request.error);
+        }
+        else
+        {
+            var texture = DownloadHandlerTexture.GetContent(request);
+
+            foreach (var controller in _imageControllers)
+            {
+                if (controller.ImageModel.Url == url)
+                {
+                    Sprite image = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+
+                    controller.ImageModel.SetImage(image);
+                    controller.onUpdateUI.Invoke();
+                }
+            }
+
+            _cache.UpdateCathe(_htmlLoader.Url, _imageControllers);
         }
     }
 

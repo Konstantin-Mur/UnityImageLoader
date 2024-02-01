@@ -9,16 +9,27 @@ public class Cache : MonoBehaviour
     private List<string> _keysUrl = new List<string>();
     private Settings _settings;
 
+    private void Start()
+    {
+        _settings = FindObjectOfType<Settings>();
+    }
+
     public bool CheckCathe(string url)
     {
         foreach (var keyUrl in CacheOfImages.Keys)
         {
             if (url == keyUrl)
             {
+                DisplayTheImages(url);
                 return false;
             }
         }
 
+        if (_cacheOfImages.Keys.Count > 0)
+        {
+            HideTheImages();
+        }
+        
         return true;
     }
 
@@ -40,8 +51,27 @@ public class Cache : MonoBehaviour
         _cacheOfImages.Add(url, models);
     }
 
-    private void Start()
+    public void HideTheImages()
     {
-        _settings = FindObjectOfType<Settings>();
+        var lastKey = _keysUrl.Count -1;
+        if (_cacheOfImages.TryGetValue(_keysUrl[lastKey], out List<ImageController> values))
+        {
+            foreach (var image in values)
+            {
+                image.gameObject.SetActive(false);
+            }
+        } 
+    }
+
+    public void DisplayTheImages(string urlKey)
+    {
+        HideTheImages();
+        if (_cacheOfImages.TryGetValue(urlKey, out List<ImageController> values))
+        {
+            foreach (var image in values)
+            {
+                image.gameObject.SetActive(true);
+            }
+        }
     }
 }
